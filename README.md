@@ -16,9 +16,6 @@ To set up and run the project:
 4. Create a custom GPT with openapi actions specification
 3. Utilize the provided API endpoints for file and directory operations.
 
-## Testing
-Run `testing.py` to perform automated tests on the various functionalities provided by the application.
-
 ---
 
 **Note**: This project is part of an autonomous code building and management system, designed to streamline the development process.
