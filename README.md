@@ -1,7 +1,7 @@
 # Code Builder GPT Project
 
 ## Overview
-This project, named 'Code Builder GPT', is designed for autonomous application development based on provided specifications. It includes a set of advanced capabilities such as directory and file management, code execution, and testing functionality. The primary goal is to develop, test, and debug applications efficiently and autonomously using ChatGPT.
+This project is designed for autonomous application development based on provided specifications. It includes a set of advanced capabilities such as directory and file management, code execution, and testing functionality. The primary goal is to develop, test, and debug applications efficiently and autonomously using ChatGPT.
 
 ## Files in the Project
 - **chatgpt.conf**: Configuration file containing the name and description of the project, as well as instructions for the Code Builder GPT.
