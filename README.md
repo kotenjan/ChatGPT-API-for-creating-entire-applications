@@ -5,7 +5,6 @@ This project is designed for autonomous application development based on provide
 
 ## Files in the Project
 - **chatgpt.conf**: Configuration file containing the name and description of the project, as well as instructions for the Code Builder GPT.
-- **testing.py**: A Python script that tests various functionalities like creating and removing directories and files, reading file contents, and executing commands.
 - **codegpt.py**: The main Python application which includes a Flask server setup and routes for handling file operations and command execution.
 - **openapi.conf**: An OpenAPI configuration file detailing the API endpoints for file and directory management.
 
