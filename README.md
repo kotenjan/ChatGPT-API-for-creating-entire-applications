@@ -12,6 +12,8 @@ This project is designed for autonomous application development based on provide
 To set up and run the project:
 1. Ensure you have Python and Flask installed.
 2. Run `codegpt.py` to start the Flask server.
+3. Expose the port on the internet (f.e. using ngrok)
+4. Create a custom GPT with openapi actions specification
 3. Utilize the provided API endpoints for file and directory operations.
 
 ## Testing
