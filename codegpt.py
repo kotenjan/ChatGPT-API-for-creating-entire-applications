@@ -3,7 +3,7 @@ import os
 import traceback
 import shutil
 import subprocess
-
+import sys
 
 app = Flask(__name__)
 
@@ -106,11 +106,17 @@ def read_file():
     try:
         data = request.json
         file_path = "./" + data['file_path']
-        start_line = data.get('start_line', 1)
+        start_line = data.get('start_line')
         end_line = data.get('end_line')
 
         if not os.path.isfile(file_path):
             return jsonify({'error': 'File not found'}), 404
+        
+        if not start_line:
+            return jsonify({'error': 'You forgot to specify start_line, the line to start reading the file from'}), 400
+        
+        if start_line < 1:
+            return jsonify({'error': 'Invalid start_line index! Lines start from 1'}), 400
 
         with open(file_path, 'r') as file:
             lines = file.readlines()
@@ -118,6 +124,9 @@ def read_file():
                 lines = [{i + start_line: line} for i, line in enumerate(lines[start_line-1:end_line])]
             else:
                 lines = [{i + start_line: line} for i, line in enumerate(lines[start_line-1:])]
+                
+        if len(lines) > 300:
+            return jsonify({'warning': f'The file is too long, returning only lines {start_line}..{start_line+300}', 'file_content': lines[:300]}), 200
 
         return jsonify({'file_content': lines}), 200
 
@@ -130,11 +139,17 @@ def remove_lines():
     try:
         data = request.json
         file_path = "./" + data['file_path']
-        start_line = data.get('start_line', 1)
-        length = data.get('length', 1)
+        start_line = data.get('start_line')
+        length = data.get('length')
+        
+        if not start_line:
+            return jsonify({'error': 'You forgot to specify start_line, the line from which to start removing'}), 400
         
         if start_line < 1:
-            return jsonify({'error': 'Invalid index! Lines start from 1'}), 400
+            return jsonify({'error': 'Invalid start_line index! Lines start from 1'}), 400
+        
+        if not length:
+            return jsonify({'error': 'You forgot to specify length, the number of lines that should be removed from start_line'}), 400
             
         if not os.path.isfile(file_path):
             return jsonify({'error': 'File not found'}), 404
@@ -148,7 +163,7 @@ def remove_lines():
         with open(file_path, 'w') as file:
             file.writelines(lines)
 
-        return jsonify({'message': 'File lines removed successfully'}), 200
+        return jsonify({'message': f'File lines {start_line}..{start_line+length} removed successfully'}), 200
 
     except Exception:
         error_traceback = traceback.format_exc()
@@ -159,15 +174,20 @@ def insert_lines():
     try:
         data = request.json
         file_path = "./" + data['file_path']
-        start_line = data.get('start_line', 1)
+        start_line = data.get('start_line')
         new_lines = data.get('new_lines')
+        
+        if not start_line:
+            return jsonify({'error': 'You forgot to specify start_line, the line your new lines should be inserted to'}), 400
+
+        if start_line < 1:
+            return jsonify({'error': 'Invalid start_line index! Lines start from 1'}), 400
 
         if not os.path.isfile(file_path):
             return jsonify({'error': 'File not found'}), 404
 
         with open(file_path, 'r') as file:
             lines = file.readlines()
-            
             
             for i in range(max(0, start_line + len(new_lines) - len(lines))):
                 lines.append("")    
@@ -179,7 +199,7 @@ def insert_lines():
         with open(file_path, 'w') as file:
             file.writelines(lines)
 
-        return jsonify({'message': 'File lines inserted successfully'}), 200
+        return jsonify({'message': f'New lines inserted successfully into file lines {start_line}..{start_line+len(new_lines)}'}), 200
 
     except Exception:
         error_traceback = traceback.format_exc()
@@ -204,5 +224,7 @@ def execute_command():
         return jsonify({'error': error_traceback}), 500
 
 if __name__ == '__main__':
-    #app.run(debug=True, ssl_context=('cert.pem', 'key.pem'))
-    app.run(debug=True)
+    if len(sys.argv) > 1:
+        os.chdir(sys.argv[1])
+    app.run(debug=True, use_reloader=False)
+
